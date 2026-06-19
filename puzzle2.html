@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puzzle 2 — Div's Birthday!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f0f7ff;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+    overflow-x: hidden;
+  }
+
+  .confetti-bar {
+    width: 100%;
+    text-align: center;
+    font-size: 1.6rem;
+    letter-spacing: 4px;
+    margin-bottom: 1.5rem;
+    animation: sway 3s ease-in-out infinite alternate;
+  }
+  @keyframes sway { from{letter-spacing:4px} to{letter-spacing:8px} }
+
+  .card {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 4px 32px rgba(100,160,255,0.15);
+    padding: 2.5rem 2rem;
+    max-width: 600px;
+    width: 100%;
+    border: 2.5px solid #b3d4ff;
+  }
+
+  .puzzle-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    color: #2f80ed;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.4rem;
+  }
+
+  h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: #2d2d2d;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .hint-box {
+    background: #e8f1ff;
+    border-left: 4px solid #2f80ed;
+    border-radius: 0 12px 12px 0;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 1.8rem;
+    font-size: 1rem;
+    color: #1a3a6b;
+    font-weight: 600;
+  }
+  .hint-box span { font-weight: 700; color: #2f80ed; }
+
+  .puzzle-link-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #56ccf2, #2f80ed);
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    text-align: center;
+    text-decoration: none;
+    padding: 1rem;
+    border-radius: 14px;
+    margin-bottom: 2rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 14px rgba(47,128,237,0.35);
+  }
+  .puzzle-link-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(47,128,237,0.45); }
+
+  .divider { border: none; border-top: 2px dashed #b3d4ff; margin: 0 0 1.8rem; }
+
+  .unlock-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.6rem;
+  }
+
+  .code-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 2.5px solid #b3d4ff;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d2d2d;
+    background: #f0f7ff;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+  }
+  .code-input:focus { border-color: #2f80ed; }
+  .code-input.error { border-color: #e74c3c; animation: shake 0.35s; }
+  .code-input.success { border-color: #2ecc71; }
+
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  .submit-btn {
+    width: 100%;
+    background: #2d2d2d;
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .submit-btn:hover { background: #444; transform: translateY(-1px); }
+
+  .message-box {
+    display: none;
+    margin-top: 1.5rem;
+    background: #e8f8f0;
+    border: 2px solid #2ecc71;
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    color: #1a6b3c;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .message-box.visible { display: block; animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+
+  @keyframes popIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+
+  .next-btn {
+    display: none;
+    margin-top: 1rem;
+    width: 100%;
+    background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 14px rgba(161,140,209,0.35);
+    text-decoration: none;
+    text-align: center;
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(161,140,209,0.45); }
+  .next-btn.visible { display: block; animation: popIn 0.3s 0.15s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+  .error-msg { display: none; color: #e74c3c; font-size: 0.9rem; font-weight: 600; margin-top: 0.5rem; }
+  .error-msg.visible { display: block; }
+
+  .balloons { font-size: 2rem; margin-bottom: 1rem; animation: float 2.5s ease-in-out infinite alternate; }
+  @keyframes float { from{transform:translateY(0)} to{transform:translateY(-8px)} }
+</style>
+</head>
+<body>
+
+<div class="confetti-bar">🐝 🍯 🎈 🌟 🎉 🌻 🐝 🍯</div>
+
+<div class="card">
+  <div class="balloons">🐝</div>
+  <div class="puzzle-num">Puzzle 2 of 4</div>
+  <h1>Spell Bee Time! 🌟</h1>
+
+  <div class="hint-box">
+    <span>Hint:</span> The Pangram will tell you where we are headed next!
+  </div>
+
+  <a class="puzzle-link-btn" href="https://mywordle.strivemath.com/spellbee?l=sgdidhyjy" target="_blank">
+    🐝 Open the Spell Bee →
+  </a>
+
+  <hr class="divider">
+
+  <div class="unlock-label">Enter the unlock code</div>
+  <input class="code-input" id="codeInput" type="text" placeholder="Type your code here..." autocomplete="off" />
+  <div class="error-msg" id="errorMsg">Hmm, that's not quite right. Try again! 🤔</div>
+  <button class="submit-btn" onclick="checkCode()">Unlock ✨</button>
+
+  <div class="message-box" id="rewardMsg">
+    🍳 Congratulations! Let's head to breakfast while you enjoy your second award!
+  </div>
+  <a class="next-btn" id="nextBtn" href="puzzle3.html">
+    On to Puzzle 3! 🎈
+  </a>
+</div>
+
+<script>
+  const CORRECT = "2345";
+
+  function checkCode() {
+    const input = document.getElementById('codeInput');
+    const val = input.value.trim();
+    const err = document.getElementById('errorMsg');
+    const reward = document.getElementById('rewardMsg');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (val === CORRECT) {
+      input.classList.remove('error');
+      input.classList.add('success');
+      err.classList.remove('visible');
+      reward.classList.add('visible');
+      nextBtn.classList.add('visible');
+    } else {
+      input.classList.add('error');
+      err.classList.add('visible');
+      setTimeout(() => input.classList.remove('error'), 400);
+    }
+  }
+
+  document.getElementById('codeInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkCode();
+  });
+</script>
+</body>
+</html>

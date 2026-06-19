@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Div! 🎂</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #fff9f0;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  canvas#confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 28px;
+    box-shadow: 0 8px 48px rgba(255,180,100,0.2);
+    padding: 3rem 2.5rem;
+    max-width: 560px;
+    width: 100%;
+    border: 2.5px solid #ffd6a5;
+    text-align: center;
+  }
+
+  .big-emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+    animation: heartbeat 1.4s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.08); }
+    56% { transform: scale(1); }
+  }
+
+  h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.6rem;
+    color: #f4845f;
+    margin-bottom: 0.4rem;
+    line-height: 1.15;
+  }
+
+  .subtitle {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-bottom: 2rem;
+  }
+
+  .message {
+    background: linear-gradient(135deg, #fff5e6, #fce4f7);
+    border-radius: 18px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 2rem;
+    border: 2px solid #ffd6a5;
+  }
+
+  .message p {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #3d2b1f;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .stars {
+    font-size: 1.8rem;
+    letter-spacing: 6px;
+    margin-bottom: 1.5rem;
+    animation: twinkle 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.7; letter-spacing: 6px; }
+    to { opacity: 1; letter-spacing: 10px; }
+  }
+
+  .from-line {
+    font-size: 1rem;
+    color: #bbb;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .balloons-row {
+    font-size: 2.2rem;
+    letter-spacing: 8px;
+    margin-top: 1.5rem;
+    animation: float 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes float { from{transform:translateY(0)} to{transform:translateY(-10px)} }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="card">
+  <span class="big-emoji">🎂</span>
+  <h1>Happy Birthday, Div!</h1>
+  <div class="subtitle">You made it through all 4! 🎉</div>
+
+  <div class="message">
+    <p>Hope this day is as beautiful<br>as the life that's<br>waiting for you. 🌟</p>
+  </div>
+
+  <div class="stars">⭐ ✨ 🌟 ✨ ⭐</div>
+
+  <div class="from-line">with love 🧡</div>
+  <div class="balloons-row">🎈 🎁 🎊 🥳 🎈</div>
+</div>
+
+<script>
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const colors = ['#f4845f','#ffb347','#56ccf2','#a29bfe','#fd79a8','#55efc4','#ffeaa7','#e17055'];
+  const pieces = [];
+
+  for (let i = 0; i < 120; i++) {
+    pieces.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight - window.innerHeight,
+      r: Math.random() * 7 + 4,
+      d: Math.random() * 80 + 10,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      tilt: Math.random() * 10 - 10,
+      tiltAngle: 0,
+      tiltAngleIncrement: Math.random() * 0.07 + 0.05,
+      shape: Math.random() > 0.5 ? 'circle' : 'rect'
+    });
+  }
+
+  let angle = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    angle += 0.01;
+
+    pieces.forEach((p, i) => {
+      p.tiltAngle += p.tiltAngleIncrement;
+      p.y += (Math.cos(angle + p.d) + 2.5) * 0.8;
+      p.x += Math.sin(angle) * 0.6;
+      p.tilt = Math.sin(p.tiltAngle) * 12;
+
+      ctx.beginPath();
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.arc(p.x + p.tilt, p.y, p.r, 0, Math.PI * 2);
+      } else {
+        ctx.rect(p.x + p.tilt, p.y, p.r * 1.5, p.r * 0.7);
+      }
+      ctx.fill();
+
+      if (p.y > canvas.height) {
+        p.x = Math.random() * canvas.width;
+        p.y = -10;
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+</body>
+</html>
